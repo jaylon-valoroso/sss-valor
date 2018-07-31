@@ -249,6 +249,7 @@ STATUS_SECOND = 1
 class DNSResolver(object):
 
     def __init__(self, server_list=None, prefer_ipv6=False):
+        logging.info("DNSResolver instantiated")
         self._loop = None
         self._hosts = {}
         self._hostname_status = {}

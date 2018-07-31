@@ -39,9 +39,6 @@ def main():
 
     daemon.daemon_exec(config)
 
-    logging.basicConfig(level=logging.INFO,
-                        format='%(filename)s %(lineno)d %(funcName)s %(message)s')
-
     if config['port_password']:
         if config['password']:
             logging.warn('warning: port_password should not be used with '
@@ -67,9 +64,11 @@ def main():
     udp_servers = []
 
     if 'dns_server' in config:  # allow override settings in resolv.conf
+        logging.info("dns_server in config")
         dns_resolver = asyncdns.DNSResolver(config['dns_server'],
                                             config['prefer_ipv6'])
     else:
+        logging.info("dns_server not in config")
         dns_resolver = asyncdns.DNSResolver(prefer_ipv6=config['prefer_ipv6'])
 
     port_password = config['port_password']

@@ -111,6 +111,9 @@ class TCPRelayHandler(object):
 
     def __init__(self, server, fd_to_handlers, loop, local_sock, config,
                  dns_resolver, is_local):
+        logging.info("TCPRelayHandler instantiated")
+        logging.info("%(lineno)d %(funcName)s instantiated")
+
         self._server = server
         self._fd_to_handlers = fd_to_handlers
         self._loop = loop
@@ -721,6 +724,8 @@ class TCPRelayHandler(object):
 class TCPRelay(object):
 
     def __init__(self, config, dns_resolver, is_local, stat_callback=None):
+        logging.info("TCPRelayHandler instantiated")
+        logging.info("%(lineno)d %(funcName)s instantiated")
         self._config = config
         self._is_local = is_local
         self._dns_resolver = dns_resolver
