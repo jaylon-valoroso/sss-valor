@@ -145,16 +145,21 @@ class SelectLoop(object):
 
 class EventLoop(object):
     def __init__(self):
+        logging.info("EventLoop instantiated.")
         if hasattr(select, 'epoll'):
+            logging.info("epoll")
             self._impl = select.epoll()
             model = 'epoll'
         elif hasattr(select, 'kqueue'):
+            logging.info("kqueue")
             self._impl = KqueueLoop()
             model = 'kqueue'
         elif hasattr(select, 'select'):
+            logging.info("select")
             self._impl = SelectLoop()
             model = 'select'
         else:
+            logging.info("other.")
             raise Exception('can not find any available functions in select '
                             'package')
         self._fdmap = {}  # (f, handler)
