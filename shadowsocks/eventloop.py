@@ -210,6 +210,7 @@ class EventLoop(object):
                     continue
 
             for sock, fd, event in events:
+                logging.info("sock:%s event:%s" % (str(sock), str(event)))
                 handler = self._fdmap.get(fd, None)
                 if handler is not None:
                     handler = handler[1]
@@ -222,6 +223,8 @@ class EventLoop(object):
                 for callback in self._periodic_callbacks:
                     callback()
                 self._last_time = now
+
+        logging.info("stop running .....")
 
     def __del__(self):
         self._impl.close()

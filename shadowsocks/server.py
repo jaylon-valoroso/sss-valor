@@ -55,7 +55,7 @@ def main():
                 logging.info('a_server_port:%s' % str(a_server_port))
                 config['port_password'][a_server_port] = config['password']
         else:
-            logging.info('a_server_port:%s' % str(server_port))
+            logging.info('server_port:%s' % str(server_port))
             config['port_password'][str(server_port)] = config['password']
 
     if config.get('manager_address', 0):
