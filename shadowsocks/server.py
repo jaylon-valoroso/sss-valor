@@ -29,6 +29,10 @@ from shadowsocks import shell, daemon, eventloop, tcprelay, udprelay, \
 
 
 def main():
+    logging.basicConfig(level=logging.INFO,
+                        format='%(filename)s %(lineno)d %(funcName)s %(message)s')
+
+    logging.info("check_python")
     shell.check_python()
 
     config = shell.get_config(False)
