@@ -192,6 +192,7 @@ class EventLoop(object):
 
     def run(self):
         events = []
+        logging.info("start running .....")
         while not self._stopping:
             asap = False
             try:

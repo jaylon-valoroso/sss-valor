@@ -88,7 +88,7 @@ def main():
     logging.info('config type:' + str(type(config)))
 
     def run_server():
-        logging.info("run_server")
+        logging.info("run_server enters")
 
         def child_handler(signum, _):
             logging.warn('received SIGQUIT, doing graceful shutting down..')
@@ -121,6 +121,7 @@ def main():
                 if r == 0:
                     logging.info('worker started')
                     is_child = True
+                    logging.info("run_server enters - 3")
                     run_server()
                     break
                 else:
@@ -149,8 +150,10 @@ def main():
                     os.waitpid(child, 0)
         else:
             logging.warn('worker is only available on Unix/Linux')
+            logging.info("call run_server - 1")
             run_server()
     else:
+        logging.info("call run_server enters - 2")
         run_server()
 
 
