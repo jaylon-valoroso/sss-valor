@@ -49,10 +49,10 @@ def main():
         server_port = config['server_port']
         if type(server_port) == list:
             for a_server_port in server_port:
-                logging('a_server_port:%s' % a_server_port)
+                logging('a_server_port:%s' % str(a_server_port))
                 config['port_password'][a_server_port] = config['password']
         else:
-            logging('a_server_port:%s' % server_port)
+            logging('a_server_port:%s' % str(server_port))
             config['port_password'][str(server_port)] = config['password']
 
     if config.get('manager_address', 0):
@@ -70,7 +70,7 @@ def main():
         dns_resolver = asyncdns.DNSResolver(prefer_ipv6=config['prefer_ipv6'])
 
     port_password = config['port_password']
-    logging.info("port_password" & port_password)
+    logging.info("port_password" % str(port_password))
 
     del config['port_password']
     for port, password in port_password.items():
