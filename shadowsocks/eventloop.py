@@ -222,6 +222,7 @@ class EventLoop(object):
                 logging.info("fd:%d event:%s" % (fd, event))
                 handler = self._fdmap.get(fd, None)
                 if handler is not None:
+                    logging.info("handler is %s", handler.__str__)
                     handler = handler[1]
                     try:
                         handler.handle_event(sock, fd, event)
