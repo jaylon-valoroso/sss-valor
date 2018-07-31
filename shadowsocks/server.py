@@ -49,10 +49,10 @@ def main():
         server_port = config['server_port']
         if type(server_port) == list:
             for a_server_port in server_port:
-                logging('a_server_port:%d' % a_server_port)
+                logging('a_server_port:%s' % a_server_port)
                 config['port_password'][a_server_port] = config['password']
         else:
-            logging('~a_server_port:%d' % server_port)
+            logging('a_server_port:%s' % server_port)
             config['port_password'][str(server_port)] = config['password']
 
     if config.get('manager_address', 0):
