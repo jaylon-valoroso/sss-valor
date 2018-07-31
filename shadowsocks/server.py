@@ -39,6 +39,9 @@ def main():
 
     daemon.daemon_exec(config)
 
+    logging.basicConfig(level=logging.INFO,
+                        format='%(filename)s %(lineno)d %(funcName)s %(message)s')
+
     if config['port_password']:
         if config['password']:
             logging.warn('warning: port_password should not be used with '
@@ -70,7 +73,7 @@ def main():
         dns_resolver = asyncdns.DNSResolver(prefer_ipv6=config['prefer_ipv6'])
 
     port_password = config['port_password']
-    logging.info("port_password:" % str(port_password))
+    logging.info("port_password:%s" % str(port_password))
 
     del config['port_password']
     for port, password in port_password.items():
