@@ -49,8 +49,10 @@ def main():
         server_port = config['server_port']
         if type(server_port) == list:
             for a_server_port in server_port:
+                logging('a_server_port:%d' % a_server_port)
                 config['port_password'][a_server_port] = config['password']
         else:
+            logging('~a_server_port:%d' % server_port)
             config['port_password'][str(server_port)] = config['password']
 
     if config.get('manager_address', 0):
@@ -68,6 +70,8 @@ def main():
         dns_resolver = asyncdns.DNSResolver(prefer_ipv6=config['prefer_ipv6'])
 
     port_password = config['port_password']
+    logging.info("port_password" & port_password)
+
     del config['port_password']
     for port, password in port_password.items():
         a_config = config.copy()
@@ -78,7 +82,10 @@ def main():
         tcp_servers.append(tcprelay.TCPRelay(a_config, dns_resolver, False))
         udp_servers.append(udprelay.UDPRelay(a_config, dns_resolver, False))
 
+    logging.info('config type:' + type(config))
+
     def run_server():
+        logging.info("run_server")
         def child_handler(signum, _):
             logging.warn('received SIGQUIT, doing graceful shutting down..')
             list(map(lambda s: s.close(next_tick=True),
