@@ -754,6 +754,7 @@ class TCPRelay(object):
                             (listen_addr, listen_port))
         af, socktype, proto, canonname, sa = addrs[0]
         server_socket = socket.socket(af, socktype, proto)
+        logging.info("%s %d %s is called. server_socket:%d" % (__file__, sys._getframe().f_lineno, sys._getframe().f_code.co_name, server_socket.fileno()))
         server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         server_socket.bind(sa)
         server_socket.setblocking(False)
@@ -768,6 +769,7 @@ class TCPRelay(object):
         self._stat_callback = stat_callback
 
     def add_to_loop(self, loop):
+        logging.info("%s %d %s is called" % (__file__, sys._getframe().f_lineno, sys._getframe().f_code.co_name))
         if self._eventloop:
             raise Exception('already add to loop')
         if self._closed:

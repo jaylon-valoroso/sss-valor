@@ -126,6 +126,7 @@ class UDPRelay(object):
                             (self._listen_addr, self._listen_port))
         af, socktype, proto, canonname, sa = addrs[0]
         server_socket = socket.socket(af, socktype, proto)
+        logging.info("%s %d %s is called. server_socket:%d" % (__file__, sys._getframe().f_lineno, sys._getframe().f_code.co_name, server_socket.fileno()))
         server_socket.bind((self._listen_addr, self._listen_port))
         server_socket.setblocking(False)
         self._server_socket = server_socket
@@ -322,6 +323,7 @@ class UDPRelay(object):
         return data + onetimeauth_gen(data, key)
 
     def add_to_loop(self, loop):
+        logging.info("%s %d %s is called" % (__file__, sys._getframe().f_lineno, sys._getframe().f_code.co_name))
         if self._eventloop:
             raise Exception('already add to loop')
         if self._closed:
