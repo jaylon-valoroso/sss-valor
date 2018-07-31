@@ -170,6 +170,7 @@ class EventLoop(object):
 
     def poll(self, timeout=None):
         events = self._impl.poll(timeout)
+        logging.info("events : %s" % str(events))
         return [(self._fdmap[fd][0], fd, event) for fd, event in events]
 
     def add(self, f, mode, handler):
@@ -215,7 +216,7 @@ class EventLoop(object):
                     continue
 
             for sock, fd, event in events:
-                logging.info("sock:%s event:%s" % (str(sock), str(event)))
+                logging.info("event:%s" % (str(event)))
                 handler = self._fdmap.get(fd, None)
                 if handler is not None:
                     handler = handler[1]
