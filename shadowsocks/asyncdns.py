@@ -23,6 +23,7 @@ import socket
 import struct
 import re
 import logging
+import sys
 
 from shadowsocks import common, lru_cache, eventloop, shell
 
@@ -249,7 +250,7 @@ STATUS_SECOND = 1
 class DNSResolver(object):
 
     def __init__(self, server_list=None, prefer_ipv6=False):
-        logging.info("DNSResolver instantiated")
+        logging.info("%d %s instantiated" % (sys._getframe().f_lineno, self.__class__.__name__))
         self._loop = None
         self._hosts = {}
         self._hostname_status = {}

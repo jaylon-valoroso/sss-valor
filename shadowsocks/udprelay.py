@@ -67,6 +67,7 @@ import logging
 import struct
 import errno
 import random
+import sys
 
 from shadowsocks import cryptor, eventloop, lru_cache, common, shell
 from shadowsocks.common import parse_header, pack_addr, onetimeauth_verify, \
@@ -84,8 +85,7 @@ def client_key(source_addr, server_af):
 class UDPRelay(object):
 
     def __init__(self, config, dns_resolver, is_local, stat_callback=None):
-        logging.info("UDPRelay instantiated")
-        logging.info("%(lineno)d %(funcName)s instantiated")
+        logging.info("%d %s instantiated" % (sys._getframe().f_lineno, self.__class__.__name__))
         self._config = config
         if is_local:
             self._listen_addr = config['local_address']

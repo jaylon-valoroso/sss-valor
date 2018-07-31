@@ -25,6 +25,7 @@ import struct
 import logging
 import traceback
 import random
+import sys
 
 from shadowsocks import cryptor, eventloop, shell, common
 from shadowsocks.common import parse_header, onetimeauth_verify, \
@@ -111,8 +112,7 @@ class TCPRelayHandler(object):
 
     def __init__(self, server, fd_to_handlers, loop, local_sock, config,
                  dns_resolver, is_local):
-        logging.info("TCPRelayHandler instantiated")
-        logging.info("%(lineno)d %(funcName)s instantiated")
+        logging.info("%d %s instantiated" % (sys._getframe().f_lineno, self.__class__.__name__))
 
         self._server = server
         self._fd_to_handlers = fd_to_handlers
@@ -724,8 +724,7 @@ class TCPRelayHandler(object):
 class TCPRelay(object):
 
     def __init__(self, config, dns_resolver, is_local, stat_callback=None):
-        logging.info("TCPRelayHandler instantiated")
-        logging.info("%(lineno)d %(funcName)s instantiated")
+        logging.info("%d %s instantiated" % (sys._getframe().f_lineno, self.__class__.__name__))
         self._config = config
         self._is_local = is_local
         self._dns_resolver = dns_resolver
