@@ -28,6 +28,7 @@ import select
 import traceback
 import errno
 import logging
+import sys
 from collections import defaultdict
 
 from shadowsocks import shell
@@ -175,6 +176,7 @@ class EventLoop(object):
 
     def add(self, f, mode, handler):
         fd = f.fileno()
+        logging.info("%s %d %s is called.fd:%d" % (os.path.basename(__file__), sys._getframe().f_lineno, sys._getframe().f_code.co_name, fd))
         self._fdmap[fd] = (f, handler)
         self._impl.register(fd, mode)
 

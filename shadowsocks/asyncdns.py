@@ -319,14 +319,14 @@ class DNSResolver(object):
             self._hosts['localhost'] = '127.0.0.1'
 
     def add_to_loop(self, loop):
-        logging.info("%s %d %s is called" % (__file__, sys._getframe().f_lineno, sys._getframe().f_code.co_name))
+        logging.info("%s %d %s is called" % (os.path.basename(__file__), sys._getframe().f_lineno, sys._getframe().f_code.co_name))
         if self._loop:
             raise Exception('already add to loop')
         self._loop = loop
         # TODO when dns server is IPv6
         self._sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM,
                                    socket.SOL_UDP)
-        logging.info("%s %d %s is called. server_socket:%d" % (__file__, sys._getframe().f_lineno, sys._getframe().f_code.co_name, self._sock.fileno()))
+        logging.info("%s %d %s is called. server_socket:%d" % (os.path.basename(__file__), sys._getframe().f_lineno, sys._getframe().f_code.co_name, self._sock.fileno()))
         self._sock.setblocking(False)
         loop.add(self._sock, eventloop.POLL_IN, self)
         loop.add_periodic(self.handle_periodic)

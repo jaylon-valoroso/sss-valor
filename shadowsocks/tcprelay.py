@@ -26,6 +26,7 @@ import logging
 import traceback
 import random
 import sys
+import os
 
 from shadowsocks import cryptor, eventloop, shell, common
 from shadowsocks.common import parse_header, onetimeauth_verify, \
@@ -754,7 +755,7 @@ class TCPRelay(object):
                             (listen_addr, listen_port))
         af, socktype, proto, canonname, sa = addrs[0]
         server_socket = socket.socket(af, socktype, proto)
-        logging.info("%s %d %s is called. server_socket:%d" % (__file__, sys._getframe().f_lineno, sys._getframe().f_code.co_name, server_socket.fileno()))
+        logging.info("%s %d %s is called. server_socket:%d" % (os.path.basename(__file__), sys._getframe().f_lineno, sys._getframe().f_code.co_name, server_socket.fileno()))
         server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         server_socket.bind(sa)
         server_socket.setblocking(False)
@@ -769,12 +770,13 @@ class TCPRelay(object):
         self._stat_callback = stat_callback
 
     def add_to_loop(self, loop):
-        logging.info("%s %d %s is called" % (__file__, sys._getframe().f_lineno, sys._getframe().f_code.co_name))
+        logging.info("%s %d %s is called" % (os.path.basename(__file__), sys._getframe().f_lineno, sys._getframe().f_code.co_name))
         if self._eventloop:
             raise Exception('already add to loop')
         if self._closed:
             raise Exception('already closed')
         self._eventloop = loop
+        logging.info("%s %d %s socket:%d" % (os.path.basename(__file__), sys._getframe().f_lineno, sys._getframe().f_code.co_name, self._server_socket.fileno()))
         self._eventloop.add(self._server_socket,
                             eventloop.POLL_IN | eventloop.POLL_ERR, self)
         self._eventloop.add_periodic(self.handle_periodic)

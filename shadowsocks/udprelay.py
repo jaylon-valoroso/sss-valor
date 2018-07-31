@@ -68,6 +68,7 @@ import struct
 import errno
 import random
 import sys
+import os
 
 from shadowsocks import cryptor, eventloop, lru_cache, common, shell
 from shadowsocks.common import parse_header, pack_addr, onetimeauth_verify, \
@@ -126,7 +127,7 @@ class UDPRelay(object):
                             (self._listen_addr, self._listen_port))
         af, socktype, proto, canonname, sa = addrs[0]
         server_socket = socket.socket(af, socktype, proto)
-        logging.info("%s %d %s is called. server_socket:%d" % (__file__, sys._getframe().f_lineno, sys._getframe().f_code.co_name, server_socket.fileno()))
+        logging.info("%s %d %s is called. server_socket:%d" % (os.path.basename(__file__), sys._getframe().f_lineno, sys._getframe().f_code.co_name, server_socket.fileno()))
         server_socket.bind((self._listen_addr, self._listen_port))
         server_socket.setblocking(False)
         self._server_socket = server_socket
@@ -323,7 +324,7 @@ class UDPRelay(object):
         return data + onetimeauth_gen(data, key)
 
     def add_to_loop(self, loop):
-        logging.info("%s %d %s is called" % (__file__, sys._getframe().f_lineno, sys._getframe().f_code.co_name))
+        logging.info("%s %d %s is called" % (os.path.basename(__file__), sys._getframe().f_lineno, sys._getframe().f_code.co_name))
         if self._eventloop:
             raise Exception('already add to loop')
         if self._closed:
@@ -331,6 +332,7 @@ class UDPRelay(object):
         self._eventloop = loop
 
         server_socket = self._server_socket
+        logging.info("%s %d %s socket:%d" % (os.path.basename(__file__), sys._getframe().f_lineno, sys._getframe().f_code.co_name, server_socket.fileno()))
         self._eventloop.add(server_socket,
                             eventloop.POLL_IN | eventloop.POLL_ERR, self)
         loop.add_periodic(self.handle_periodic)
