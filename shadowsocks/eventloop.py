@@ -176,9 +176,10 @@ class EventLoop(object):
 
     def add(self, f, mode, handler):
         fd = f.fileno()
-        logging.info("%s %d %s is called.fd:%d" % (os.path.basename(__file__), sys._getframe().f_lineno, sys._getframe().f_code.co_name, fd))
         self._fdmap[fd] = (f, handler)
+        logging.info("%s %d %s is called. _fdmap:%s" % (os.path.basename(__file__), sys._getframe().f_lineno, sys._getframe().f_code.co_name, self._fdmap.__str__()))
         self._impl.register(fd, mode)
+
 
     def remove(self, f):
         fd = f.fileno()
@@ -218,7 +219,7 @@ class EventLoop(object):
                     continue
 
             for sock, fd, event in events:
-                logging.info("event:%s" % (str(event)))
+                logging.info("fd:%d event:%s" % (fd, event))
                 handler = self._fdmap.get(fd, None)
                 if handler is not None:
                     handler = handler[1]
@@ -226,6 +227,8 @@ class EventLoop(object):
                         handler.handle_event(sock, fd, event)
                     except (OSError, IOError) as e:
                         shell.print_exception(e)
+                else:
+                    logging.info("handler is null.fd:%d", fd)
             now = time.time()
             if asap or now - self._last_time >= TIMEOUT_PRECISION:
                 for callback in self._periodic_callbacks:
