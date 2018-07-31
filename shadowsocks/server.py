@@ -85,10 +85,11 @@ def main():
         tcp_servers.append(tcprelay.TCPRelay(a_config, dns_resolver, False))
         udp_servers.append(udprelay.UDPRelay(a_config, dns_resolver, False))
 
-    logging.info('config type:' + type(config))
+    logging.info('config type:' + str(type(config)))
 
     def run_server():
         logging.info("run_server")
+
         def child_handler(signum, _):
             logging.warn('received SIGQUIT, doing graceful shutting down..')
             list(map(lambda s: s.close(next_tick=True),
