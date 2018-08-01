@@ -27,14 +27,14 @@ import logging
 
 
 def encode(s):
-    result = ''
+    result = '\n'
     index = 1
     for c in s:
         v = hex(ord(c)).replace('0x', '')
         if len(v) == 1:
             v = '0' + v
         result += v
-        if index % 32 == 0:
+        if index % 16 == 0:
             result += '\n'
         elif index % 1 == 0:
             result += ' '

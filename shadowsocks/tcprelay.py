@@ -518,11 +518,14 @@ class TCPRelayHandler(object):
 
     def _check_auth_method(self, data):
         # VER, NMETHODS, and at least 1 METHODS
+        logging.info("len:%d data:" % (len(data), utils.encode(data)))
         if len(data) < 3:
             logging.warning('method selection header too short')
             raise BadSocksHeader
         socks_version = common.ord(data[0])
         nmethods = common.ord(data[1])
+        logging.info("socks_version:%d nmethods:%d data:%s %s"
+                     % (socks_version, nmethods, str(data[0]), str(data[1])))
         if socks_version != 5:
             logging.warning('unsupported SOCKS protocol version ' +
                             str(socks_version))
@@ -557,7 +560,7 @@ class TCPRelayHandler(object):
     def _on_local_read(self):
         # handle all local read events and dispatch them to methods for
         # each stage
-        logging.info("%s %d self._is_local:%d" % (os.path.basename(__file__), sys._getframe().f_lineno, self._is_local))
+        logging.info("_is_local:%d _is_tunnel:%d" % (self._is_local, self._is_tunnel))
         if not self._local_sock:
             return
         is_local = self._is_local

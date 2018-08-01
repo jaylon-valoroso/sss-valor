@@ -32,11 +32,11 @@ def main():
                         format='%(filename)s %(lineno)d %(funcName)s %(message)s')
     logging.info("main exec...")
 
-    a = "123456"
-    s = utils.encode(a)
-    logging.info(s)
-    b = utils.decode(s)
-    logging.info(b)
+    # a = "123456"
+    # s = utils.encode(a)
+    # logging.info(s)
+    # b = utils.decode(s)
+    # logging.info(b)
 
     shell.check_python()
 
