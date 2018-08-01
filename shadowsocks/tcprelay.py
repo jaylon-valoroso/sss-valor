@@ -113,7 +113,7 @@ class TCPRelayHandler(object):
 
     def __init__(self, server, fd_to_handlers, loop, local_sock, config,
                  dns_resolver, is_local):
-        logging.info("%d %s instantiated" % (sys._getframe().f_lineno, self.__class__.__name__))
+        logging.info("%s instantiated" % (self.__class__.__name__))
 
         self._server = server
         self._fd_to_handlers = fd_to_handlers
@@ -153,7 +153,7 @@ class TCPRelayHandler(object):
         fd_to_handlers[local_sock.fileno()] = self
         local_sock.setblocking(False)
         local_sock.setsockopt(socket.SOL_TCP, socket.TCP_NODELAY, 1)
-        logging.info('local sock:%d peer_addr:%s' % (local_sock.fileno(), self._client_address))
+        logging.info('local_sock:%d peer_addr:%s' % (local_sock.fileno(), self._client_address))
         loop.add(local_sock, eventloop.POLL_IN | eventloop.POLL_ERR,
                  self._server)
         self.last_activity = 0
@@ -344,10 +344,11 @@ class TCPRelayHandler(object):
                      (common.to_str(remote_addr), remote_port,
                       self._client_address[0], self._client_address[1]))
         if self._is_local is False:
+            logging.info("addrtype:%d _ota_enable:%d" % (addrtype, self._ota_enable))
             # spec https://shadowsocks.org/en/spec/one-time-auth.html
             self._ota_enable_session = addrtype & ADDRTYPE_AUTH
             if self._ota_enable and not self._ota_enable_session:
-                logging.warn('client one time auth is required')
+                logging.warning('client one time auth is required')
                 return
             if self._ota_enable_session:
                 if len(data) < header_length + ONETIMEAUTH_BYTES:
@@ -366,6 +367,7 @@ class TCPRelayHandler(object):
         # pause reading
         self._update_stream(STREAM_UP, WAIT_STATUS_WRITING)
         self._stage = STAGE_DNS
+        logging.info("current stage:%d _is_local:%d", self._stage, self._is_local)
         if self._is_local:
             # jump over socks5 response
             if not self._is_tunnel:
@@ -391,8 +393,10 @@ class TCPRelayHandler(object):
                 data = data[header_length:]
                 self._ota_chunk_data(data,
                                      self._data_to_write_to_remote.append)
+                logging.info("_data_to_write_to_remote:%s" % utils.encode(self._data_to_write_to_remote))
             elif len(data) > header_length:
                 self._data_to_write_to_remote.append(data[header_length:])
+                logging.info("_data_to_write_to_remote:%s" % utils.encode(self._data_to_write_to_remote))
             # notice here may go into _handle_dns_resolved directly
             self._dns_resolver.resolve(remote_addr,
                                        self._handle_dns_resolved)
@@ -446,6 +450,8 @@ class TCPRelayHandler(object):
             # else do connect
             remote_sock = self._create_remote_socket(remote_addr,
                                                      remote_port)
+
+            logging.info("remote: %s:%d, fd:%d" % (remote_addr, remote_port, remote_sock.fileno()))
             try:
                 remote_sock.connect((remote_addr, remote_port))
             except (OSError, IOError) as e:
