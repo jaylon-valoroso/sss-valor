@@ -174,15 +174,20 @@ class EventLoop(object):
         logging.info("events : %s" % str(events))
         return [(self._fdmap[fd][0], fd, event) for fd, event in events]
 
+    def logging_fdmap(self):
+        for key,value in self._fdmap.items():
+            logging.info("fd:%d -> %s", key, str(value))
+
     def add(self, f, mode, handler):
         fd = f.fileno()
         self._fdmap[fd] = (f, handler)
-        logging.info("%s %d %s is called. _fdmap:%s" % (os.path.basename(__file__), sys._getframe().f_lineno, sys._getframe().f_code.co_name, self._fdmap.__str__()))
+        self.logging_fdmap()
         self._impl.register(fd, mode)
 
     def remove(self, f):
         fd = f.fileno()
         del self._fdmap[fd]
+        self.logging_fdmap()
         self._impl.unregister(fd)
 
     def add_periodic(self, callback):
@@ -218,10 +223,9 @@ class EventLoop(object):
                     continue
 
             for sock, fd, event in events:
-                logging.info("fd:%d event:%s" % (fd, event))
                 handler = self._fdmap.get(fd, None)
                 if handler is not None:
-                    logging.info("handler is %s" % str(handler))
+                    logging.info("handler:%s" % str(handler))
                     handler = handler[1]
                     try:
                         handler.handle_event(sock, fd, event)
