@@ -592,6 +592,7 @@ class TCPRelayHandler(object):
         if not is_local:
             data = self._cryptor.decrypt(data)
             logging.info("after decrypt. len:%d data:%s" % (len(data), utils.encode(data)))
+            logging.info("data: %s" % data)
             if not data:
                 return
         if self._stage == STAGE_STREAM:
@@ -628,10 +629,14 @@ class TCPRelayHandler(object):
             self.destroy()
             return
         self._update_activity(len(data))
+        logging.info("before encrypt len:%d data:%s" % (len(data), utils.encode(data)))
+        logging.info("data:%s", data)
         if self._is_local:
             data = self._cryptor.decrypt(data)
         else:
             data = self._cryptor.encrypt(data)
+        logging.info("after encrypt len:%d data:%s" % (len(data), utils.encode(data)))
+
         try:
             self._write_to_sock(data, self._local_sock)
         except Exception as e:
@@ -646,8 +651,10 @@ class TCPRelayHandler(object):
         if self._data_to_write_to_local:
             data = b''.join(self._data_to_write_to_local)
             self._data_to_write_to_local = []
+            logging.info("len:%d data:%s" % (len(data), utils.encode(data)))
             self._write_to_sock(data, self._local_sock)
         else:
+            logging.info("")
             self._update_stream(STREAM_DOWN, WAIT_STATUS_READING)
 
     def _on_remote_write(self):
@@ -656,8 +663,10 @@ class TCPRelayHandler(object):
         if self._data_to_write_to_remote:
             data = b''.join(self._data_to_write_to_remote)
             self._data_to_write_to_remote = []
+            logging.info("len:%d data:%s" % (len(data), utils.encode(data)))
             self._write_to_sock(data, self._remote_sock)
         else:
+            logging.info("")
             self._update_stream(STREAM_UP, WAIT_STATUS_READING)
 
     def _on_local_error(self):
