@@ -256,6 +256,7 @@ class TCPRelayHandler(object):
         return True
 
     def _handle_stage_connecting(self, data):
+        logging.info("connecting")
         if not self._is_local:
             if self._ota_enable_session:
                 self._ota_chunk_data(data,
@@ -512,6 +513,7 @@ class TCPRelayHandler(object):
         return data_len + sha110 + data
 
     def _handle_stage_stream(self, data):
+        logging.info("streaming. is_local:%d _ota_enable_session:%d" % (self._is_local, self._ota_enable_session))
         if self._is_local:
             if self._ota_enable_session:
                 data = self._ota_chunk_data_gen(data)
@@ -591,10 +593,10 @@ class TCPRelayHandler(object):
         self._update_activity(len(data))
         if not is_local:
             data = self._cryptor.decrypt(data)
-            logging.info("after decrypt. len:%d data:%s" % (len(data), utils.encode(data)))
-            logging.info("data: %s" % data)
             if not data:
                 return
+        logging.info("after decrypt. len:%d data:%s" % (len(data), utils.encode(data)))
+
         if self._stage == STAGE_STREAM:
             self._handle_stage_stream(data)
             return
@@ -630,7 +632,6 @@ class TCPRelayHandler(object):
             return
         self._update_activity(len(data))
         logging.info("before encrypt len:%d data:%s" % (len(data), utils.encode(data)))
-        logging.info("data:%s", data)
         if self._is_local:
             data = self._cryptor.decrypt(data)
         else:
