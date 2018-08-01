@@ -20,12 +20,6 @@ import os
 import logging
 
 
-#def valor_logging(msg):
-#    logging.basicConfig(level=logging.INFO,
-#                        format='%(filename)s %(lineno)d %(funcName)s %(message)s')
-#    logging.info(msg)
-
-
 def encode(s):
     result = '\n'
     index = 1

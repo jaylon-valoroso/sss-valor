@@ -181,7 +181,7 @@ class EventLoop(object):
     def add(self, f, mode, handler):
         fd = f.fileno()
         self._fdmap[fd] = (f, handler)
-        logging.info("add socket. fd:%d mode:%d" % (fd, mode))
+        logging.info("add socket. fd:%d mode:%s" % (fd, hex(mode)))
         self.logging_fdmap()
         self._impl.register(fd, mode)
 

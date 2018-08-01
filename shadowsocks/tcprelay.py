@@ -668,14 +668,13 @@ class TCPRelayHandler(object):
     @shell.exception_handle(self_=True, destroy=True)
     def handle_event(self, sock, event):
         # handle all events in this handler and dispatch them to methods
-        logging.info("%s %d %s is called. stage:%d" %
-                     (os.path.basename(__file__),sys._getframe().f_lineno,sys._getframe().f_code.co_name, self._stage))
+        logging.info("current stage:%d" % (self._stage))
         if self._stage == STAGE_DESTROYED:
             logging.debug('ignore handle_event: destroyed')
             return
         # order is important
         if sock == self._remote_sock:
-            logging.info("it is remote sock")
+            logging.info("it is remote sock. fd:%d" % sock.fileno())
             if event & eventloop.POLL_ERR:
                 self._on_remote_error()
                 if self._stage == STAGE_DESTROYED:
@@ -687,8 +686,7 @@ class TCPRelayHandler(object):
             if event & eventloop.POLL_OUT:
                 self._on_remote_write()
         elif sock == self._local_sock:
-            logging.info("%s %d it is local sock. fd:%d" %
-                         (os.path.basename(__file__), sys._getframe().f_lineno, self._local_sock.fileno()))
+            logging.info("it is local sock. fd:%d" % (sock.fileno()))
             if event & eventloop.POLL_ERR:
                 self._on_local_error()
                 if self._stage == STAGE_DESTROYED:
