@@ -414,20 +414,26 @@ class DNSResolver(object):
 
     def resolve(self, hostname, callback):
         if type(hostname) != bytes:
+            logging.info("")
             hostname = hostname.encode('utf8')
         if not hostname:
+            logging.info("")
             callback(None, Exception('empty hostname'))
         elif common.is_ip(hostname):
+            logging.info("")
             callback((hostname, hostname), None)
         elif hostname in self._hosts:
+            logging.info("")
             logging.debug('hit hosts: %s', hostname)
             ip = self._hosts[hostname]
             callback((hostname, ip), None)
         elif hostname in self._cache:
+            logging.info("")
             logging.debug('hit cache: %s', hostname)
             ip = self._cache[hostname]
             callback((hostname, ip), None)
         else:
+            logging.info("")
             if not is_valid_hostname(hostname):
                 callback(None, Exception('invalid hostname: %s' % hostname))
                 return

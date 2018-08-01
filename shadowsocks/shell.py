@@ -218,7 +218,7 @@ def get_config(is_local):
     #                     format='%(levelname)-s: %(message)s')
 
     logging.basicConfig(level=logging.DEBUG,
-                        format='%(filename)s %(lineno)d %(funcName)s %(message)s')
+                        format='%(levelname)-4s:%(filename)s %(lineno)d %(funcName)s %(message)s')
 
     if is_local:
         shortopts = 'hd:s:b:p:k:l:m:c:t:vqa'
@@ -357,7 +357,7 @@ def get_config(is_local):
     #                     datefmt='%Y-%m-%d %H:%M:%S')
     #
     logging.basicConfig(level=logging.DEBUG,
-                       format='%(filename)s %(lineno)d %(funcName)s %(message)s')
+                       format='%(levelname)-4s:%(filename)s %(lineno)d %(funcName)s %(message)s')
 
     check_config(config, is_local)
 

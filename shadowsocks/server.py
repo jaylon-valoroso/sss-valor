@@ -29,11 +29,17 @@ from shadowsocks import shell, daemon, eventloop, tcprelay, udprelay, \
 
 def main():
     logging.basicConfig(level=logging.DEBUG,
-                        format='%(filename)s %(lineno)d %(funcName)s %(message)s')
+                        format='%(levelname)-4s:%(filename)s %(lineno)d %(funcName)s %(message)s')
     logging.info("main exec...")
 
     # a = "123456"
-    # s = utils.encode(a)
+    # b = []
+    # b.append(a)
+    #
+    # logging.info("a:%s" % a[2:])
+    # logging.info("b:%s" % type(b))
+    #
+    # s = utils.encode(b[0])
     # logging.info(s)
     # b = utils.decode(s)
     # logging.info(b)
