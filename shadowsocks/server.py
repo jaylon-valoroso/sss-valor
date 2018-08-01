@@ -28,7 +28,7 @@ from shadowsocks import shell, daemon, eventloop, tcprelay, udprelay, \
     asyncdns, manager, utils
 
 def main():
-    logging.basicConfig(level=logging.INFO,
+    logging.basicConfig(level=logging.DEBUG,
                         format='%(filename)s %(lineno)d %(funcName)s %(message)s')
     logging.info("main exec...")
 

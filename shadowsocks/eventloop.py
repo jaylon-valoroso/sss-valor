@@ -176,17 +176,19 @@ class EventLoop(object):
 
     def logging_fdmap(self):
         for key,value in self._fdmap.items():
-            logging.info("fd:%d -> %s", key, str(value))
+            logging.info("fd:  %d -> %s", key, str(value))
 
     def add(self, f, mode, handler):
         fd = f.fileno()
         self._fdmap[fd] = (f, handler)
+        logging.info("add socket. fd:%d mode:%d" % (fd, mode))
         self.logging_fdmap()
         self._impl.register(fd, mode)
 
     def remove(self, f):
         fd = f.fileno()
         del self._fdmap[fd]
+        logging.info("remove socket. fd:%d", fd)
         self.logging_fdmap()
         self._impl.unregister(fd)
 
@@ -225,14 +227,14 @@ class EventLoop(object):
             for sock, fd, event in events:
                 handler = self._fdmap.get(fd, None)
                 if handler is not None:
-                    logging.info("handler:%s" % str(handler))
+                    logging.info("fd:%d handler:%s" % (fd, str(handler)))
                     handler = handler[1]
                     try:
                         handler.handle_event(sock, fd, event)
                     except (OSError, IOError) as e:
                         shell.print_exception(e)
                 else:
-                    logging.info("handler is null.fd:%d", fd)
+                    logging.error("handler is null.fd:%d", fd)
             now = time.time()
             if asap or now - self._last_time >= TIMEOUT_PRECISION:
                 for callback in self._periodic_callbacks:

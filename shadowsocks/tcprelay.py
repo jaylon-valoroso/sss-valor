@@ -860,13 +860,12 @@ class TCPRelay(object):
 
     def handle_event(self, sock, fd, event):
         # handle events and dispatch to handlers
-        logging.info("%s %d %s is called. fd:%d %s" % (os.path.basename(__file__), sys._getframe().f_lineno, sys._getframe().f_code.co_name, fd,
-                        eventloop.EVENT_NAMES.get(event, event)))
+        logging.info("fd:%d %s" % (fd, eventloop.EVENT_NAMES.get(event, event)))
         if sock:
             logging.log(shell.VERBOSE_LEVEL, 'fd %d %s', fd,
                         eventloop.EVENT_NAMES.get(event, event))
         if sock == self._server_socket:
-            logging.info("it is self._server_socket")
+            logging.info("it is _server_socket")
             if event & eventloop.POLL_ERR:
                 # TODO
                 raise Exception('server_socket error')
@@ -886,7 +885,7 @@ class TCPRelay(object):
                     if self._config['verbose']:
                         traceback.print_exc()
         else:
-            logging.info("it is not self._server_socket")
+            logging.info("it is not _server_socket")
             if sock:
                 handler = self._fd_to_handlers.get(fd, None)
                 if handler:
