@@ -576,11 +576,11 @@ class TCPRelayHandler(object):
             self.destroy()
             return
 
-        logging.info("before decrypt. len:%d data:%s" % (len(data), data))
+        logging.info("before decrypt. len:%d data:%s" % (len(data), utils.encode(data)))
         self._update_activity(len(data))
         if not is_local:
             data = self._cryptor.decrypt(data)
-            logging.info("after decrypt. len:%d" % (len(data)))
+            logging.info("after decrypt. len:%d data:%s" % (len(data), utils.encode(data)))
             if not data:
                 return
         if self._stage == STAGE_STREAM:
@@ -664,7 +664,8 @@ class TCPRelayHandler(object):
     @shell.exception_handle(self_=True, destroy=True)
     def handle_event(self, sock, event):
         # handle all events in this handler and dispatch them to methods
-        logging.info("%s %d %s is called. stage:%d" % (os.path.basename(__file__), sys._getframe().f_lineno, sys._getframe().f_code.co_name, self._stage))
+        logging.info("%s %d %s is called. stage:%d" %
+                     (os.path.basename(__file__),sys._getframe().f_lineno,sys._getframe().f_code.co_name, self._stage))
         if self._stage == STAGE_DESTROYED:
             logging.debug('ignore handle_event: destroyed')
             return
@@ -682,7 +683,8 @@ class TCPRelayHandler(object):
             if event & eventloop.POLL_OUT:
                 self._on_remote_write()
         elif sock == self._local_sock:
-            logging.info("%s %d it is local sock" % (os.path.basename(__file__), sys._getframe().f_lineno))
+            logging.info("%s %d it is local sock. fd:%d" %
+                         (os.path.basename(__file__), sys._getframe().f_lineno, self._local_sock.fileno()))
             if event & eventloop.POLL_ERR:
                 self._on_local_error()
                 if self._stage == STAGE_DESTROYED:

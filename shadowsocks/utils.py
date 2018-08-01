@@ -20,8 +20,39 @@ import os
 import logging
 
 
-def valor_logging(msg):
-    logging.basicConfig(level=logging.INFO,
-                        format='%(filename)s %(lineno)d %(funcName)s %(message)s')
-    logging.info(msg)
+#def valor_logging(msg):
+#    logging.basicConfig(level=logging.INFO,
+#                        format='%(filename)s %(lineno)d %(funcName)s %(message)s')
+#    logging.info(msg)
+
+
+def encode(s):
+    result = ''
+    index = 1
+    for c in s:
+        v = hex(ord(c)).replace('0x', '')
+        if len(v) == 1:
+            v = '0' + v
+        result += v
+        if index % 32 == 0:
+            result += '\n'
+        elif index % 1 == 0:
+            result += ' '
+        index += 1
+    return result
+
+
+def decode(s):
+    s = s.replace(' ', '')
+    s = s.replace('\n', '')
+    result = ''
+    index = 1
+    cc = ''
+    for c in s:
+        cc += c
+        if index % 2 == 0:
+            result += chr(int(cc, 16))
+            cc = ''
+        index += 1
+    return result
 

@@ -27,9 +27,16 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), '../'))
 from shadowsocks import shell, daemon, eventloop, tcprelay, udprelay, \
     asyncdns, manager, utils
 
-
 def main():
-    utils.valor_logging("main exec...")
+    logging.basicConfig(level=logging.INFO,
+                        format='%(filename)s %(lineno)d %(funcName)s %(message)s')
+    logging.info("main exec...")
+
+    a = "123456"
+    s = utils.encode(a)
+    logging.info(s)
+    b = utils.decode(s)
+    logging.info(b)
 
     shell.check_python()
 

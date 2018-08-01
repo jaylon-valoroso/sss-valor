@@ -180,7 +180,6 @@ class EventLoop(object):
         logging.info("%s %d %s is called. _fdmap:%s" % (os.path.basename(__file__), sys._getframe().f_lineno, sys._getframe().f_code.co_name, self._fdmap.__str__()))
         self._impl.register(fd, mode)
 
-
     def remove(self, f):
         fd = f.fileno()
         del self._fdmap[fd]
