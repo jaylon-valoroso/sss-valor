@@ -398,7 +398,7 @@ class TCPRelayHandler(object):
                 self._data_to_write_to_remote.append(data[header_length:])
                 logging.info("_data_to_write_to_remote:%s" % utils.encode(data[header_length:]))
             # notice here may go into _handle_dns_resolved directly
-            self._dns_resolver.resoflve(remote_addr,
+            self._dns_resolver.resolve(remote_addr,
                                        self._handle_dns_resolved)
 
     def _create_remote_socket(self, ip, port):
