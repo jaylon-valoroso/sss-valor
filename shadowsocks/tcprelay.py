@@ -153,6 +153,7 @@ class TCPRelayHandler(object):
         fd_to_handlers[local_sock.fileno()] = self
         local_sock.setblocking(False)
         local_sock.setsockopt(socket.SOL_TCP, socket.TCP_NODELAY, 1)
+        logging.info('local sock:%d', local_sock.fileno)
         loop.add(local_sock, eventloop.POLL_IN | eventloop.POLL_ERR,
                  self._server)
         self.last_activity = 0
@@ -659,11 +660,13 @@ class TCPRelayHandler(object):
     @shell.exception_handle(self_=True, destroy=True)
     def handle_event(self, sock, event):
         # handle all events in this handler and dispatch them to methods
+        logging.info("%s %d %s is called. stage:%d" % (os.path.basename(__file__), sys._getframe().f_lineno, sys._getframe().f_code.co_name, self._stage))
         if self._stage == STAGE_DESTROYED:
             logging.debug('ignore handle_event: destroyed')
             return
         # order is important
         if sock == self._remote_sock:
+            logging.info("it is remote sock")
             if event & eventloop.POLL_ERR:
                 self._on_remote_error()
                 if self._stage == STAGE_DESTROYED:
@@ -675,6 +678,7 @@ class TCPRelayHandler(object):
             if event & eventloop.POLL_OUT:
                 self._on_remote_write()
         elif sock == self._local_sock:
+            logging.info("it is local sock")
             if event & eventloop.POLL_ERR:
                 self._on_local_error()
                 if self._stage == STAGE_DESTROYED:
@@ -686,6 +690,7 @@ class TCPRelayHandler(object):
             if event & eventloop.POLL_OUT:
                 self._on_local_write()
         else:
+            logging.info("it is unknown sock")
             logging.warn('unknown socket')
 
     def destroy(self):
@@ -748,6 +753,8 @@ class TCPRelay(object):
             listen_port = config['server_port']
         self._listen_port = listen_port
 
+        logging.info("is_local:%d listen_addr:%s listen_port:%s", is_local, listen_addr, listen_port)
+
         addrs = socket.getaddrinfo(listen_addr, listen_port, 0,
                                    socket.SOCK_STREAM, socket.SOL_TCP)
         if len(addrs) == 0:
@@ -760,6 +767,7 @@ class TCPRelay(object):
         server_socket.bind(sa)
         server_socket.setblocking(False)
         if config['fast_open']:
+            logging.info("fast_open is enabled")
             try:
                 server_socket.setsockopt(socket.SOL_TCP, 23, 5)
             except socket.error:
@@ -842,10 +850,13 @@ class TCPRelay(object):
 
     def handle_event(self, sock, fd, event):
         # handle events and dispatch to handlers
+        logging.info("%s %d %s is called. fd:%d %s" % (os.path.basename(__file__), sys._getframe().f_lineno, sys._getframe().f_code.co_name, fd,
+                        eventloop.EVENT_NAMES.get(event, event)))
         if sock:
             logging.log(shell.VERBOSE_LEVEL, 'fd %d %s', fd,
                         eventloop.EVENT_NAMES.get(event, event))
         if sock == self._server_socket:
+            logging.info("it is self._server_socket")
             if event & eventloop.POLL_ERR:
                 # TODO
                 raise Exception('server_socket error')
@@ -865,6 +876,7 @@ class TCPRelay(object):
                     if self._config['verbose']:
                         traceback.print_exc()
         else:
+            logging.info("it is not self._server_socket")
             if sock:
                 handler = self._fd_to_handlers.get(fd, None)
                 if handler:
