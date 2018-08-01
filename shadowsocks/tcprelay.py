@@ -28,7 +28,7 @@ import random
 import sys
 import os
 
-from shadowsocks import cryptor, eventloop, shell, common
+from shadowsocks import cryptor, eventloop, shell, common, utils
 from shadowsocks.common import parse_header, onetimeauth_verify, \
     onetimeauth_gen, ONETIMEAUTH_BYTES, ONETIMEAUTH_CHUNK_BYTES, \
     ONETIMEAUTH_CHUNK_DATA_LEN, ADDRTYPE_AUTH
@@ -153,7 +153,7 @@ class TCPRelayHandler(object):
         fd_to_handlers[local_sock.fileno()] = self
         local_sock.setblocking(False)
         local_sock.setsockopt(socket.SOL_TCP, socket.TCP_NODELAY, 1)
-        logging.info('local sock:%d', local_sock.fileno)
+        logging.info('local sock:%d peer_addr:%s' % (local_sock.fileno(), self._client_address))
         loop.add(local_sock, eventloop.POLL_IN | eventloop.POLL_ERR,
                  self._server)
         self.last_activity = 0
@@ -557,6 +557,7 @@ class TCPRelayHandler(object):
     def _on_local_read(self):
         # handle all local read events and dispatch them to methods for
         # each stage
+        logging.info("%s %d self._is_local:%d" % (os.path.basename(__file__), sys._getframe().f_lineno, self._is_local))
         if not self._local_sock:
             return
         is_local = self._is_local
@@ -574,9 +575,12 @@ class TCPRelayHandler(object):
         if not data:
             self.destroy()
             return
+
+        logging.info("before decrypt. len:%d data:%s" % (len(data), data))
         self._update_activity(len(data))
         if not is_local:
             data = self._cryptor.decrypt(data)
+            logging.info("after decrypt. len:%d" % (len(data)))
             if not data:
                 return
         if self._stage == STAGE_STREAM:
@@ -678,7 +682,7 @@ class TCPRelayHandler(object):
             if event & eventloop.POLL_OUT:
                 self._on_remote_write()
         elif sock == self._local_sock:
-            logging.info("it is local sock")
+            logging.info("%s %d it is local sock" % (os.path.basename(__file__), sys._getframe().f_lineno))
             if event & eventloop.POLL_ERR:
                 self._on_local_error()
                 if self._stage == STAGE_DESTROYED:

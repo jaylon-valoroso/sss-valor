@@ -25,14 +25,12 @@ import signal
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '../'))
 from shadowsocks import shell, daemon, eventloop, tcprelay, udprelay, \
-    asyncdns, manager
+    asyncdns, manager, utils
 
 
 def main():
-    logging.basicConfig(level=logging.INFO,
-                        format='%(filename)s %(lineno)d %(funcName)s %(message)s')
+    utils.valor_logging("main exec...")
 
-    logging.info("check_python")
     shell.check_python()
 
     config = shell.get_config(False)
